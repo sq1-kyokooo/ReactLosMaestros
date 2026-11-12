@@ -3,7 +3,7 @@ import MainLayout from './MainLayout'
 import { useEffect } from 'react'
 import { prod, employees } from './components/admin_components/Constants'
 import Admin from './pages/Admin'
-import { Login } from './pages/Login'
+import Login from './pages/Login.jsx'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './components/Layout.jsx'
 import Inicio from './pages/pages.pagina/Inicio.jsx'
@@ -46,7 +46,7 @@ export default function App() {
           <Route path="pago-error" element={<PagoResultado tipo="error" />} />
         </Route>
         <Route element={<MainLayout />}>
-          <Route path='/login' element={<Login />} />
+          <Route path='/login' element={<Login/>} />
         </Route>
         <Route
           path='/admin'

@@ -8,8 +8,6 @@ import ListEmployees from './ListEmployees';
 import AddEmployees from './AddEmployees';
 import EditEmployee from './EditarEmpleado';
 import DeleteEmployee from './DeleteEmployee';
-import LoadAddProductPanel from './AddProduct';
-import LoadEditPanel from './EditProduct';
 
 describe('SwitchPanel', () => {
     const empleados = [
@@ -97,7 +95,7 @@ describe('SwitchPanel', () => {
         ).toBeTruthy();
     });
 
-    it('debe renderizar LoadAddProductPanel para addProductos', () => {
+    it('debe renderizar AddProductPanel para addProductos', () => {
         render(
             <SwitchPanel {...props} id={Tabs.addProductos} />
         );
@@ -107,13 +105,23 @@ describe('SwitchPanel', () => {
         ).toBeTruthy();
     });
 
-    it('debe renderizar LoadEditPanel para editarProductos', () => {
+    it('debe renderizar EditProductPanel para editarProductos', () => {
         render(
             <SwitchPanel {...props} id={Tabs.editarProductos} />
         );
 
         expect(
             screen.getByRole('button', { name: 'Confirmar Edicion' })
+        ).toBeTruthy();
+    });
+
+    it('debe renderizar DeleteProductPanel para eliminarProductos', () => {
+        render(
+            <SwitchPanel {...props} id={Tabs.eliminarProductos} />
+        );
+
+        expect(
+            screen.getByRole('button', { name: 'Eliminar Producto' })
         ).toBeTruthy();
     });
 

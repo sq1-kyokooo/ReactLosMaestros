@@ -1,6 +1,8 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { Link } from "react-router-dom";
+import { getRole } from "../components/ProtectedRoute";
 
 function Permisos() {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -49,6 +51,8 @@ function Login() {
 
       <pre>{JSON.stringify(user, null, 2)}</pre>
       <Permisos />
+
+      {getRole(user.email) === "admin" && <Link to="/admin">Ir al panel admin</Link>}
 
       <button onClick={logout}>Logout</button>
     </>

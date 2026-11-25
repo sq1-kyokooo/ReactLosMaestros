@@ -5,4 +5,6 @@ import './src/components/admin_components/Panels/DeleteEmployee.spec.tsx';
 import './src/components/admin_components/Panels/EditarEmpleado.spec.tsx';
 import './src/components/admin_components/Panels/InventorySpec.spec.tsx';
 import './src/components/admin_components/Panels/ListEmployees.spec.tsx';
-import './src/components/admin_components/Panels/SwitchPanel.spec.tsx';
+import './src/components/admin_components/Panels/SwitchPanel.spec.tsx';import './src/components/admin_components/Panels/DeleteProduct.spec.tsx';
+import './src/components/ProtectedRoute.spec.tsx';
+import './src/components/admin_components/Panels/EditProduct.spec.tsx';

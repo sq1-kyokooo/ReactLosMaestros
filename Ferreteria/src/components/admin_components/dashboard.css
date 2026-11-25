@@ -377,3 +377,19 @@ tr:hover {
 .btn-cancelar:hover {
   background-color: #d32f2f;
 }
+
+.result-message {
+  margin-top: 15px;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.result-message.ok {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.result-message.error {
+  background-color: #ffebee;
+  color: #c62828;
+}

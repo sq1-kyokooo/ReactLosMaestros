@@ -1,5 +1,7 @@
 import React from 'react';
 import {Navigate} from "react-router-dom";
+import { useAuth0 } from '@auth0/auth0-react';
+import type { User } from '../constants/mockUsers';
 
 //Componente para proteger la ruta de administrador (localhost/admin)
 interface ProtectedRouteProps{
@@ -7,16 +9,28 @@ interface ProtectedRouteProps{
     allowedRole?: 'admin' | 'normal';
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRole }) => {
-    const storedUser = localStorage.getItem('currentUser');
+// El rol se obtiene buscando el correo del usuario de Auth0 en la lista de usuarios
+export function getRole(email?: string): User['rol'] {
+    try {
+        const users: User[] = JSON.parse(localStorage.getItem('users') ?? '[]');
+        return users.find((u) => u.email === email)?.rol ?? 'normal';
+    } catch {
+        return 'normal';
+    }
+}
 
-    if (!storedUser) {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRole }) => {
+    const { isLoading, isAuthenticated, user } = useAuth0();
+
+    if (isLoading) {
+        return <p>Cargando...</p>;
+    }
+
+    if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
 
-    const user = JSON.parse(storedUser);
-
-    if (allowedRole && user.rol !== allowedRole) {
+    if (allowedRole && getRole(user?.email) !== allowedRole) {
         return <Navigate to="/" replace />;
     }
 

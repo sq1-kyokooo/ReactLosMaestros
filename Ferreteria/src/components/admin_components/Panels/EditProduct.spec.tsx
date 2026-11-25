@@ -1,94 +1,70 @@
-
 import { render, screen, fireEvent } from '@testing-library/react';
-import LoadEditPanel from './EditProduct';
-import { updatePrice } from '../../../Services/InventoryService';
+import EditProductPanel from './EditProduct';
 
-describe('EditProduct', () => {
+describe('EditProductPanel', () => {
     beforeEach(() => {
-        spyOn(window, 'alert');
-        spyOn(console, 'log');
-        spyOn(
-            // El servicio se espía para comprobar la llamada del componente.
-            { updatePrice },
-            'updatePrice'
-        );
+        localStorage.clear();
+        localStorage.setItem('prod', JSON.stringify([
+            { codigo: 'P001', categoria: 'Herramientas', nombre: 'Martillo', marca: 'Acme', precioVenta: 5000, stock: 10 }
+        ]));
     });
 
-    const completarFormulario = (codigo: string, precio: string) => {
-        fireEvent.change(screen.getByLabelText('Código Producto:'), {
-            target: { value: codigo },
-        });
-
-        fireEvent.change(screen.getByLabelText('Nuevo Precio:'), {
-            target: { value: precio },
-        });
+    const editar = (codigo: string, precio: string) => {
+        fireEvent.change(screen.getByLabelText('Código Producto:'), { target: { value: codigo } });
+        fireEvent.change(screen.getByLabelText('Nuevo Precio:'), { target: { value: precio } });
+        fireEvent.submit(
+            screen.getByRole('button', { name: 'Confirmar Edicion' }).closest('form')!
+        );
     };
 
-    const enviarFormulario = () => {
-    const formulario = screen
-        .getByRole('button', { name: 'Confirmar Edicion' })
-        .closest('form');
+    const precioGuardado = () => JSON.parse(localStorage.getItem('prod')!)[0].precioVenta;
 
-    expect(formulario).not.toBeNull();
-
-    fireEvent.submit(formulario!);
-
-    expect(window.alert).toHaveBeenCalledWith(
-        'entrando a funcion actualizar Precio'
-    );
-    };
     it('renderiza los campos y el botón', () => {
-        render(<LoadEditPanel />);
+        render(<EditProductPanel />);
 
         expect(screen.getByLabelText('Código Producto:')).toBeTruthy();
         expect(screen.getByLabelText('Nuevo Precio:')).toBeTruthy();
-        expect(
-            screen.getByRole('button', { name: 'Confirmar Edicion' })
-        ).toBeTruthy();
+        expect(screen.getByRole('button', { name: 'Confirmar Edicion' })).toBeTruthy();
+        expect(screen.queryByRole('status')).toBeNull();
     });
 
-    it('ejecuta el envío del formulario con los datos ingresados', () => {
-        render(<LoadEditPanel />);
+    it('actualiza el precio, muestra éxito y limpia el formulario', () => {
+        render(<EditProductPanel />);
 
-        completarFormulario('P001', '7500');
-        enviarFormulario();
+        editar('P001', '7500');
 
-        expect(window.alert).toHaveBeenCalledWith(
-            'entrando a funcion actualizar Precio'
-        );
-        expect(console.log).toHaveBeenCalledWith({
-            codigo: 'P001',
-            price: '7500',
-        });
+        expect(precioGuardado()).toBe(7500);
+        expect(screen.getByRole('status').textContent).toBe('Precio de P001 actualizado.');
+        expect(screen.getByRole('status').classList).toContain('ok');
+        expect((screen.getByLabelText('Código Producto:') as HTMLInputElement).value).toBe('');
     });
 
-    it('permite enviar un precio cero', () => {
-        render(<LoadEditPanel />);
+    it('muestra un error si el producto no existe', () => {
+        render(<EditProductPanel />);
 
-        completarFormulario('P001', '0');
-        enviarFormulario();
+        editar('P999', '7500');
 
-        expect(window.alert).toHaveBeenCalled();
+        expect(screen.getByRole('status').textContent).toBe('No existe un producto con el código P999.');
+        expect(screen.getByRole('status').classList).toContain('error');
     });
 
-    it('permite enviar un precio negativo mediante el evento submit', () => {
-        render(<LoadEditPanel />);
+    it('muestra un error y no cambia el precio si es cero o negativo', () => {
+        render(<EditProductPanel />);
 
-        completarFormulario('P001', '-100');
-        enviarFormulario();
+        editar('P001', '0');
+        expect(screen.getByRole('status').textContent).toBe('El precio debe ser mayor a 0.');
 
-        expect(window.alert).toHaveBeenCalled();
+        editar('P001', '-100');
+        expect(screen.getByRole('status').textContent).toBe('El precio debe ser mayor a 0.');
+
+        expect(precioGuardado()).toBe(5000);
     });
 
-    it('convierte el código ausente en una cadena vacía', () => {
-        render(<LoadEditPanel />);
+    it('muestra un error si el código está vacío', () => {
+        render(<EditProductPanel />);
 
-        const formulario = screen
-            .getByRole('button', { name: 'Confirmar Edicion' })
-            .closest('form')!;
+        editar('   ', '1000');
 
-        fireEvent.submit(formulario);
-
-        expect(window.alert).toHaveBeenCalled();
+        expect(screen.getByRole('status').textContent).toBe('Ingresa un código.');
     });
 });

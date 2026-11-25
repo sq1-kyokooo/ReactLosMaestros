@@ -1,33 +1,21 @@
-import { useEffect, useState } from "react";
 import { TableHeads } from "../Constants";
+import type { Product } from "../../../Services/InventoryService";
 
-interface Product {
-    codigo: string;
-    categoria?: string;
-    nombre: string;
-    marca?: string;
-    precioVenta: number;
-    stock: number;
+function readProducts(): Product[] {
+    try {
+        const prodString = localStorage.getItem('prod');
+        return prodString ? JSON.parse(prodString) : [];
+    } catch {
+        return [];
+    }
 }
 
 function Panel() {
-    const [render, setRender] = useState<boolean>(false);
-    const  [prod, setProd] = useState<Product[]>(()=> {
-        const prodString = localStorage.getItem('prod');
-        return prodString ? JSON.parse(prodString) as Product[] : [];
-    })
-    useEffect(() => {
-        if (prod && prod.length > 0) {
-            setRender(true);
-        } else {
-            setRender(false)
-        }
-    }, [prod])
+    const prod = readProducts();
 
-    if (!render) {
+    if (prod.length === 0) {
         return <p className="no-data">No hay productos registrados en el inventario.</p>;
     }
-    console.log(prod)
     return (
         <div className="table-scroll-container">
             <table className="inventory-table">

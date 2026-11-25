@@ -6,7 +6,6 @@ import { TableHeads } from '../Constants';
 describe('Inventory', () => {
   beforeEach(() => {
     localStorage.clear();
-    spyOn(console, 'log');
   });
 
   it('renderiza el título del inventario', () => {
@@ -132,7 +131,7 @@ describe('Inventory', () => {
     expect(screen.getAllByRole('row').length).toBe(3);
   });
 
-  it('ejecuta el efecto con un inventario que contiene productos', () => {
+  it('muestra la tabla con un inventario que contiene productos', () => {
     localStorage.setItem('prod', JSON.stringify([
       {
         codigo: 'P003',
@@ -147,6 +146,15 @@ describe('Inventory', () => {
     render(<Inventory />);
 
     expect(screen.getByRole('table')).toBeTruthy();
-    expect(console.log).toHaveBeenCalled();
+  });
+
+  it('muestra el mensaje vacío si el inventario guardado está corrupto', () => {
+    localStorage.setItem('prod', '{json inválido');
+
+    render(<Inventory />);
+
+    expect(
+      screen.getByText('No hay productos registrados en el inventario.')
+    ).toBeTruthy();
   });
 });

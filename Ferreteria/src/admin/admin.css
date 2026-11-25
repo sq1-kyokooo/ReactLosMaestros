@@ -1,0 +1,132 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f9fbf7;
+}
+
+.admin-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-right: 2px solid #d5dbcb;
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 20px;
+  position: sticky;
+  top: 0;
+}
+
+.admin-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #272a18;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e2e8d7;
+}
+
+.admin-brand-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-nav-button {
+  width: 100%;
+  padding: 10px 14px;
+  background-color: #edf2e6;
+  color: #272a18;
+  border: 1px solid #c9d4b8;
+  border-radius: 8px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.admin-nav-button:hover,
+.admin-nav-button.active {
+  background-color: #272a18;
+  color: #fff;
+}
+
+.admin-nav-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 15px;
+  border-top: 2px solid #e2e8d7;
+}
+
+.admin-menu-toggle {
+  display: none;
+  margin: 12px;
+  padding: 6px 14px;
+  font-size: 1.4rem;
+  background: #272a18;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+}
+
+.admin-content {
+  flex-grow: 1;
+  padding: 40px;
+  overflow-x: auto;
+}
+
+.admin-panel-title {
+  color: #272a18;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #b3c29c;
+  display: inline-block;
+}
+
+.admin-form-card {
+  max-width: 520px;
+}
+
+@media (max-width: 900px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid #d5dbcb;
+  }
+
+  .admin-menu-toggle {
+    display: block;
+  }
+
+  .admin-nav {
+    display: none;
+    position: static;
+  }
+
+  .admin-nav.open {
+    display: flex;
+  }
+
+  .admin-content {
+    padding: 20px 14px;
+  }
+}

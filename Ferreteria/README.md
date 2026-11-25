@@ -1,19 +1,40 @@
-# React + Vite
+# Ferretería Los Maestros — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Vite. Auth with Auth0, permissions come from the access token's `permissions` claim.
 
-Currently, two official plugins are available:
+## Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Command             | What it does                              |
+| ------------------- | ----------------------------------------- |
+| `npm run dev`       | Dev server on http://localhost:5173       |
+| `npm run build`     | Production build                          |
+| `npm run typecheck` | TypeScript check (strict)                 |
+| `npm test`          | Karma + Jasmine in headless Firefox       |
 
-## React Compiler
+## Backend / mock mode
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+All requests go to the API gateway at `http://localhost:8081/api` (see `src/api/endpoints.ts`).
+Until the backend exists, services run against localStorage mocks. Copy `.env.example` to `.env.local` and set
+`VITE_USE_MOCK_API=false` to talk to the gateway instead.
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+| Area             | Gateway path               | Permission                  |
+| ---------------- | -------------------------- | --------------------------- |
+| Catalog (read)   | `/products/**`             | public                      |
+| Admin products   | `/crud/products/**`        | `manage:products`           |
+| Admin employees  | `/admin/**`                | `manage:users`              |
+| Checkout         | `/payments/user/**`        | `write:payments`            |
+| Contractor buy   | `/payments/contractor/**`  | `write:contractor_payments` |
 
-## Expanding the ESLint configuration
+## Layout
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+src/
+  api/        HTTP client + endpoint paths
+  auth/       Auth0 provider, permissions context, ProtectedRoute
+  services/   catalog, inventory, employees, payments (mock + API implementations)
+  cart/       cart state (context) and the cart drawer
+  admin/      admin dashboard, sidebar and panels
+  pages/      routed pages
+  components/ shared UI
+  data/       mock seed data
+```
